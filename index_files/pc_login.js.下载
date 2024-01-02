@@ -1,0 +1,255 @@
+//=================登录相关js
+// 邮箱手机号正则
+var reg1 = new RegExp('^((13[0-9])|(15[0-9])|(18[0-9])|(14[0-9])|(17[0-9])|(199)|(198)|(166))[0-9]{8}$');
+var reg2 = new RegExp('^([0-9a-zA-Z]+[_.0-9a-zA-Z-]*)@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$');
+
+//========================发送验证码或者邮件开始
+var flag = true;    //防止多次发送验证码开关
+$('#sendcode').on('click',function(){
+    var forget_email_phone=$('#forget_email_phone').val();
+    if(reg1.test(forget_email_phone)){
+        error_info_tip('hide','');
+    }else if(reg2.test(forget_email_phone)){
+        error_info_tip('hide','');
+    }else{
+        error_info_tip('show','请输入正确的手机号或邮箱！');
+        return false;
+    }
+    if (flag) {
+        dealUser(forget_email_phone,'','','sendcode');
+        flag = false;   //倒计时未完，不可再次点击
+        // 调用倒计时
+        time();
+    }
+});
+var wait=60;//时间  
+var t;//计时器  
+function time(){  
+    if (wait == 0) {  
+      $('.send-code').removeAttr('disabled');   
+      $('.send-code').val("获取验证码");  
+      $('.send-code').removeClass('active');
+      wait = 60;  
+      flag = true;  //倒计时完毕，可在次发送验证码
+    }else{  
+      $('.send-code').attr('disabled','disabled');  
+      $('.send-code').addClass('active');
+      $('.send-code').val("重发(" + wait + "s)");  
+      wait--;  
+      t=setTimeout(function(){  
+          time();  
+      },1000)  
+    }  
+} 
+
+//=========================发送验证码或者邮件结束
+
+// 登录弹窗
+$('.login').on('click',function(){
+    $('.my-login').show().siblings().hide();
+    $('.black-bg').fadeIn();
+})
+// 忘记密码弹窗
+$('.remember').on('click',function(){
+    $('.my-login').hide();
+    $('.college-forget').show();
+})
+// 注册弹窗
+$('.forget-pass').on('click',function(){
+    $('.my-login').hide();
+    $('.college-register').show();
+})
+// 模态框关闭
+$(".bth-close i").on('click',function(){
+    console.log('1')
+    $(this).parent().parent().parent().fadeOut();
+});
+$('.re-sure2').on('click',function(){
+    $('.my-login').show();
+    $(this).parent().parent().hide();
+})
+
+// 登录
+$('#user_login').on('click',function(){
+    //alert('aaaaa');return false;
+    var pass_val = $('#login_pass').val(); //密码value值
+    var email_phone = $('#login_email_phone').val().replace(/\s+/g,"") //邮箱手机号
+    if(reg1.test(email_phone)){
+      error_info_tip('hide','');
+   
+    }else if(reg2.test(email_phone)){
+      error_info_tip('hide','');
+  
+    }else{
+      error_info_tip('show','请输入正确的手机号或邮箱！');
+      return false;
+    }
+
+    //验证密码6-20位数字和字母
+    if(pass_val){
+        if(!pass_val.replace(/\s+/g,"").match(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/)){
+            error_info_tip('show','密码为6-20位数字和字母组合！');
+            return false;
+        }else{
+          error_info_tip('hide','');
+        }
+    }else if(pass_val == 0){
+        error_info_tip('show','请输入密码！');
+        return false;
+    }
+
+    //前台验证通过去登录
+    dealUser(email_phone,pass_val,'','login');
+
+})
+
+// 注册验证
+$('#user_regist').on('click',function(){
+    var pass_val = $('#regist_pass').val(); //密码value值
+    var email_phone = $('#email_phone').val().replace(/\s+/g,"") //邮箱手机号
+    if(reg1.test(email_phone)){
+      error_info_tip('hide','');
+   
+    }else if(reg2.test(email_phone)){
+      error_info_tip('hide','');
+  
+    }else{
+      error_info_tip('show','请输入正确的手机号或邮箱！');
+      return false;
+    }
+
+    //验证密码6-20位数字和字母
+    if(pass_val){
+        if(!pass_val.replace(/\s+/g,"").match(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/)){
+            error_info_tip('show','密码为6-20位数字和字母组合！');
+            return false;
+        }else{
+          error_info_tip('hide','');
+        }
+    }else if(pass_val == 0){
+        error_info_tip('show','请输入密码！');
+        return false;
+    }
+
+    //前台验证通过去注册
+    dealUser(email_phone,pass_val,'','register');
+
+})
+
+// 忘记密码验证
+$('#user_forget').on('click',function(){
+    // tel_val = $('.tel input').val();
+    var pass_val = $('#forget_pass').val(); //密码value值
+    var email_phone = $('#forget_email_phone').val().replace(/\s+/g,""); //邮箱手机号
+    var check_code= $('#check_code').val();
+
+    if(reg1.test(email_phone)){
+      error_info_tip('hide','');
+   
+    }else if(reg2.test(email_phone)){
+      error_info_tip('hide','');
+  
+    }else{
+      error_info_tip('show','请输入正确的手机号或邮箱！');
+      return false;
+    }
+
+    //验证密码6-20位数字和字母
+    if(pass_val){
+        if(!pass_val.replace(/\s+/g,"").match(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/)){
+            error_info_tip('show','密码为6-20位数字和字母组合！');
+            return false;
+        }else{
+          error_info_tip('hide','');
+        }
+    }else if(pass_val == 0){
+        error_info_tip('show','请输入密码！');
+        return false;
+    }
+
+    //验证验证码
+    if(!check_code){
+        error_info_tip('show','验证码不能为空');
+        return false;
+    }
+    //前台验证通过去找回密码
+    dealUser(email_phone ,pass_val,check_code,'forget');
+})
+
+//定义方法进行登录，忘记密码，注册等请求
+function dealUser(){
+    //传参数
+    var arg1=arguments[0]?arguments[0]:'';//账户
+    var arg2=arguments[1]?arguments[1]:'';//密码
+    var arg3=arguments[2]?arguments[2]:'';//验证码
+    var arg4=arguments[3]?arguments[3]:'';//类型
+
+    if(arg4=='login'){
+        var url ="/web/user/login?format=json";
+    }else if(arg4=='register'){
+        var url ="/web/user/register?format=json";
+    }else if(arg4=='forget'){
+        var url ="/web/user/forget?format=json";
+    }else if(arg4=='sendcode'){
+        var url ="/web/user/sendcode?format=json";
+    }
+    
+    var data={'username':arg1,'pass':arg2,'code':arg3,'act':'do'};
+    $.ajax({
+        url:url,
+        type:"POST",
+        data:data,
+        dataType:"JSON",
+        dataFilter: function (data, type) {
+            return data ;
+        },
+        success: function(json){
+            if(json.status==1 && arg4=='register'){
+                error_info_tip('show','注册成功,您可点击返回按钮进行登录');
+            }else if(json.status==1 && arg4=='sendcode'){
+                error_info_tip('show','验证码发送成功');
+            }else if(json.status==1 && arg4=='forget'){
+                error_info_tip('show','密码重置成功');
+            }else if(json.status==1 && arg4=='login'){
+                error_info_tip('show','登录成功');
+                window.location.reload();
+            }else{
+                error_info_tip('show',json.message);return false;
+            }
+        },              
+        error : function(XMLHttpRequest, textStatus, errorThrown){
+                return false;
+        }
+    });
+
+}
+
+// 用户登录后的状态
+// 鼠标移入显示二级菜单
+$('.user-login').hover(
+    function(){
+        $('.user-name-info').show();
+
+    },
+    function(){
+        $('.user-name-info').hide();
+    }
+)
+
+$('.user-name-info p').hover(
+    function(){
+        $(this).find('a').addClass('public-font');
+    },
+    function(){
+        $(this).find('a').removeClass('public-font');
+    }
+)
+
+function error_info_tip(state,mes){
+    $('.error-tip').removeClass('hide show');
+    $('.error-tip').html('');
+    $('.error-tip').addClass(state);
+    $('.error-tip').html(mes);
+    setTimeout(function(){$('.error-tip').removeClass('show').addClass('hide');},3000)
+
+}

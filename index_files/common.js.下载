@@ -1,0 +1,64 @@
+$(function(){
+    // 按学院查询--按专业查询切换效果
+    $('.college-left-content .content1').on('click',function(){
+        //alert(1111);
+        $(this).addClass('public-left-border');
+        $(this).find('i').addClass('icon-jiantouxiangyou public-bgcolor');
+        $(this).find('a').addClass('public-font');
+        $(this).next().find('.content2-type').removeClass('public-font public-left-border');
+        $(this).next().find('.content2-type a').removeClass('public-font');
+        $(this).next().find('.content2-type i').removeClass('icon-jiantouxiangyou public-bgcolor');;
+        // $(this).parent().find("li.content2-type").slideToggle();
+    })
+
+    //按专业查询的收缩展开功能
+    var is_open = '';
+    $(".college-left-content .content2 .content2-title").click(function(){
+        // 删除按学院查询样式
+        // $(this).parent().parent().prev().removeClass('public-left-border');
+        // $(this).parent().parent().prev().find('i').removeClass('icon-jiantouxiangyou public-bgcolor');
+        
+        //实现展开收缩功能
+        is_open = $(this).attr('isOpen');
+        // console.log(is_open)
+        if(is_open == 1){
+            $(this).next().slideDown();
+            //实现菜单点击时图标的转换效果
+            $(this).find("i").removeClass("icon-jiantou").addClass('icon-jiantouxiangshang');
+            $(this).attr('isOpen','2');
+        }else if(is_open == 2){
+            $(this).next().slideUp();
+            //实现菜单点击时图标的转换效果
+            $(this).find("i").removeClass("icon-jiantouxiangshang").addClass('icon-jiantou');
+            // $(this).next().slideUp();
+            // $(this).find('i').removeClass('icon-jiantouxiangshang').addClass('icon-jiantou');
+            $(this).attr('isOpen','1');
+        }
+        // $(this).parent().find("li.content2-type").slideToggle();
+
+        //实现菜单点击时图标的转换效果
+        // $(this).find(".icon-jiantou").toggleClass("icon-jiantouxiangshang");
+    })
+
+    // 按专业查询-----学术型和专业型切换
+    $('.college-left-content .content2 li.content2-type').on('click',function(){
+
+        // 删除按学院查询样式
+        $(this).parent().parent().prev().removeClass('public-left-border');
+        $(this).parent().parent().prev().find('i').removeClass('icon-jiantouxiangyou public-bgcolor');
+        $(this).parent().parent().prev().find('a').removeClass('public-font');
+
+        // 给当前选中的专业查询栏目添加样式
+        $(this).addClass('public-font public-left-border').siblings().removeClass('public-font public-left-border');
+
+        $(this).find('a').addClass('public-font').parent().siblings().find('a').removeClass('public-font');
+
+        $(this).find('i').addClass('icon-jiantouxiangyou public-bgcolor').parent().siblings().find('i').removeClass('icon-jiantouxiangyou public-bgcolor');
+    })
+
+
+
+
+
+
+})
